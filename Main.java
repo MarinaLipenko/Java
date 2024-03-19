@@ -1,105 +1,91 @@
 package ru.netology.lipenko;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
+import java.text.SimpleDateFormat;
 
+import model.Customer;
+import model.Operation;
+import repository.CustomerRepository;
+import repository.OperationRepository;
+
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
-        System.out.println("Hello and welcome!");
-/*
-        ArrayList<Object[]> transactions = new ArrayList<>();
+
+        CustomerRepository customerRepository = new CustomerRepository();
+        OperationRepository operationRepository = new OperationRepository();
+        Customer customer;
+        Operation operation;
+
+
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            if (transactions.size() == 5)
-                break;
-            else {
-                System.out.print("Номер транзакции: ");
-                int id = scanner.nextInt();
 
-                scanner.nextLine(); // Считываем и пропускаем символ новой строки
+            System.out.println("""
+                Выберете операцию:
+                1. Добавить клиента
+                2. Перевод
+                3. Список операций по клиенту
+                4. Список клиентов
+                5. Список транзакций
+                6. Выход
+                """);
 
-                System.out.print("ФИО клиента: ");
-                String fio = scanner.nextLine();
+            int command = scanner.nextInt();
 
-                System.out.print("Сумма в рублях: ");
-                double sum = scanner.nextDouble();
-
-                Object[] transactionDetails = {id, fio, sum};
-                transactions.add(transactionDetails);
+            switch (command) {
+                case 1:
+                    System.out.println("Введите Имя получателя: ");
+                    String firstName = scanner.next();
+                    System.out.println("Введите Фамилию получателя: ");
+                    String secondName = scanner.next();
+                    System.out.println("Введите возраст получателя: ");
+                    int age = scanner.nextInt();
+                    customer = new Customer(firstName,secondName,age);
+                    customerRepository.addCustomer(customer);
+                    break;
+                case 2:
+                    System.out.println("Введите сумму: ");
+                    double amount = scanner.nextDouble();
+                    System.out.println("Введите дату: ");
+                    int date = scanner.nextInt();
+                    System.out.println("Введите имя получателя");
+                    String name = scanner.next();
+                    int customerId = customerRepository.findCustomerRepo(name);
+                    if(customerId == 404){
+                        System.out.println("Повторите попытку.");
+                    } else {
+                        operation = new Operation(amount, date);
+                        operationRepository.addOperation(operation, customerId);
+                    }
+                    break;
+                case 3:
+                    System.out.println("Введите имя получателя: ");
+                    String nameCustomer = scanner.next();
+                    int nameId = customerRepository.findCustomerRepo(nameCustomer);
+                    Operation[] operationsCustomer = OperationRepository.getOperations(nameId);
+                    operationRepository.printOperation(operationsCustomer);
+                    break;
+                case 4:
+                    System.out.println("Список клиентов: ");
+                    customerRepository.print();
+                    break;
+                case 5:
+                    System.out.println("Список транзакций: ");
+                    operationRepository.print();
+                    break;
+                case 6:
+                    System.out.println("Спасибо и до свидания");
+                    b = false;
+                    break;
+                default:
+                    System.out.println("Ошибка");
+                    break;
             }
-        }
-
-        // Вывод результата
-        for (Object[] transaction : transactions) {
-            for (Object detail : transaction) {
-                System.out.print(detail + " ");
-            }
-            System.out.println();
         }
     }
 }
-
- */
-
-                ArrayList<Integer> transactionIdList = new ArrayList<>();
-                ArrayList<String> fioList = new ArrayList<>();
-                ArrayList<Double> sumList = new ArrayList<>();
-                ArrayList<String> dateList = new ArrayList<>();
-
-                Scanner scanner = new Scanner(System.in);
-
-                while (transactionIdList.size() < 5) {
-                    System.out.print("Номер транзакции: ");
-                    int id = scanner.nextInt();
-
-                    transactionIdList.add(id);
-
-                    scanner.nextLine(); // Считываем и пропускаем символ новой строки
-
-                    System.out.print("ФИО клиента: ");
-                    String fio = scanner.nextLine();
-
-                    fioList.add(fio);
-
-                    System.out.print("Сумма в рублях: ");
-                    double sum = scanner.nextDouble();
-
-                    sumList.add(sum);
-
-                    scanner.nextLine(); // Считываем и пропускаем символ новой строки
-
-                    System.out.print("Дата операции (в формате дд.мм.гггг): ");
-                    String date = scanner.nextLine();
-
-                    dateList.add(date);
-
-                    scanner.nextLine(); // Считываем и пропускаем символ новой строки
-                }
-
-                System.out.println("Список транзакций:");
-
-                try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                    Date startDate = dateFormat.parse("01.01.2022");
-                    Date endDate = dateFormat.parse("31.12.2022");
-
-                    for (int i = 0; i < transactionIdList.size(); i++) {
-                        Date transactionDate = dateFormat.parse(dateList.get(i));
-                        if (transactionDate.after(startDate) && transactionDate.before(endDate)) {
-                            System.out.println("Номер транзакции: " + transactionIdList.get(i));
-                            System.out.println("ФИО клиента: " + fioList.get(i));
-                            System.out.println("Сумма в рублях: " + sumList.get(i));
-                            System.out.println("Дата операции: " + dateList.get(i));
-                            System.out.println();
-                        }
-                    }
-                } catch (ParseException e) {
-                    System.out.println("Ошибка при парсинге даты.");
-                }
-            }
-        }
